@@ -10,13 +10,13 @@ all: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
 
-myshell.o: myshell.c parser.h execute.h
+myshell.o: myshell.c
 	$(CC) $(CFLAGS) -c myshell.c
 
-parser.o: parser.c parser.h
+parser.o: parser.c
 	$(CC) $(CFLAGS) -c parser.c
 
-execute.o: execute.c execute.h redirection.h
+execute.o: execute.c redirection.h
 	$(CC) $(CFLAGS) -c execute.c
 
 redirection.o: redirection.c redirection.h
