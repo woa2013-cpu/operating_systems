@@ -3,7 +3,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
-#include "execute.h"
 #include "redirection.h"
 
 #define MAX_ARGS 64
