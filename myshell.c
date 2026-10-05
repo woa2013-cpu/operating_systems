@@ -8,6 +8,9 @@
 #include "parser.h"
 
 #define MAX_LINE 1024
+#define MAX_CMDS 64
+
+int parse_line(char *line, char *cmds[]);
 
 int main(void) {
     char line[MAX_LINE];
