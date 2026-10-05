@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
+#include "execute.h"
+#include "redirection.h"
 
-#define MAX_ARGS 64
 
 // Executes a single command in the child process.
-// in_fd: file descriptor to read from (or -1 for standard input)
-// out_fd: file descriptor to write to (or -1 for standard output)
-void execute_single_command(char *cmd_str, int in_fd, int out_fd) {
+void execute_single_command(char *cmd_str, int in_pipeline) {
     char *args[MAX_ARGS];
     int i = 0;
 
@@ -24,6 +24,13 @@ void execute_single_command(char *cmd_str, int in_fd, int out_fd) {
         exit(0);
     }
 
+    Redirection redir;
+    init_redirection(&redir);
+
+    if (extract_redirection(args, &redir) == -1){
+        exit(1);
+    }
+
     for (int j = 0; args[j] != NULL; j++) {
         int len = strlen(args[j]);
         if (len >= 2 && ((args[j][0] == '"' && args[j][len - 1] == '"') ||
@@ -33,24 +40,27 @@ void execute_single_command(char *cmd_str, int in_fd, int out_fd) {
         }
     }
 
-    // Redirect standard input if an input descriptor is provided
-    if (in_fd != -1) {
-        if (dup2(in_fd, STDIN_FILENO) < 0) {
-            perror("dup2 in");
-            exit(1);
-        }
+    if (apply_redirection(&redir) == -1) {
+        exit(1);
     }
 
-    // Redirect standard output if an output descriptor is provided
-    if (out_fd != -1) {
-        if (dup2(out_fd, STDOUT_FILENO) < 0) {
-            perror("dup2 out");
-            exit(1);
-        }
-    }
-
-    // Execute the command
+    // Execute the command.
     execvp(args[0], args);
-    perror("Command not found");
-    exit(1);
+
+    // execvp() only returns if execution failed.
+    if (errno == ENOENT){
+        if (in_pipeline){
+            fprintf(stderr, "Command not found in pipe sequence.\n");
+        }
+
+        else{
+            fprintf(stderr, "Command not found.\n");
+        }
+    }
+
+    else{
+        perror(args[0]);
+    }
+
+    exit(126);
 }
