@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "parser.h"
+
+#define MAX_CMDS 64
 
 // Checks the command line for missing commands around pipe operators.
 // Returns -1 if the pipe syntax is invalid and 0 otherwise.
