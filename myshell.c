@@ -4,13 +4,13 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include "execute.h"
-#include "parser.h"
+
 
 #define MAX_LINE 1024
 #define MAX_CMDS 64
 
 int parse_line(char *line, char *cmds[]);
+void execute_single_command(char *cmd_str, int in_pipeline);
 
 int main(void) {
     char line[MAX_LINE];
