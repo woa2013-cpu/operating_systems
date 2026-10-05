@@ -6,6 +6,7 @@
 #include "execute.h"
 #include "redirection.h"
 
+#define MAX_ARGS 64
 
 // Executes a single command in the child process.
 void execute_single_command(char *cmd_str, int in_pipeline) {
