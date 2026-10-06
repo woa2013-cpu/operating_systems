@@ -143,14 +143,14 @@ int apply_redirection(const Redirection *redir){
 
     // Processing output redirection if > or >> was specified
     if (redir->output_file != NULL){
-        flags = O_WRONLY | O_CREAT;
+        flags = O_WRONLY | O_CREAT; // Open for writing, create if it doesn't exist
 
         if (redir->output_append){
-            flags |= O_APPEND;
+            flags |= O_APPEND; // Append to the end of the file (>>)
         }
 
         else{
-            flags |= O_TRUNC;
+            flags |= O_TRUNC; // Overwrite existing file contents (>)
         }
 
         fd = open(redir->output_file, flags, 0644);

@@ -13,12 +13,12 @@ void execute_single_command(char *cmd_str, int in_pipeline) {
     int i = 0;
 
     // Tokenize command string into arguments
-    char *token = strtok(cmd_str, " \t\r\n");
+    char *token = strtok(cmd_str, " \t\r\n"); // Stop argument when found a space or tab or carriage or newline
     while (token != NULL && i < MAX_ARGS - 1) {
-        args[i++] = token;
-        token = strtok(NULL, " \t\r\n");
+        args[i++] = token; // Add the argument into the array
+        token = strtok(NULL, " \t\r\n"); // Continue looking for the next argument
     }
-    args[i] = NULL;
+    args[i] = NULL; // Set last argument as NULL
 
     if (args[0] == NULL) {
         exit(0);
@@ -27,8 +27,9 @@ void execute_single_command(char *cmd_str, int in_pipeline) {
     Redirection redir;
     init_redirection(&redir);
 
+    // Scans arguments for redirection operators, stores filenames, and removes them from the array
     if (extract_redirection(args, &redir) == -1){
-        exit(1);
+        exit(1); // Terminate child process if redirection syntax is invalid
     }
 
     for (int j = 0; args[j] != NULL; j++) {
@@ -40,8 +41,9 @@ void execute_single_command(char *cmd_str, int in_pipeline) {
         }
     }
 
+    // Opens the extracted files and maps them to standard streams using dup2()
     if (apply_redirection(&redir) == -1) {
-        exit(1);
+        exit(1); // Terminate child process if file opening or redirection fails
     }
 
     // Execute the command.

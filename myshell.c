@@ -19,14 +19,15 @@ int main(void) {
     // Main loop to read and execute commands
     while (1) {
         printf("$ ");
-        fflush(stdout);
+        fflush(stdout); // Forces the prompt to print to the terminal immediately
 
+        // Take input
         if (fgets(line, sizeof(line), stdin) == NULL) {
             printf("\n");
             break;
         }
 
-        line[strcspn(line, "\n")] = '\0';
+        line[strcspn(line, "\n")] = '\0'; // Removes the trailing newline character from the user input
 
         // Skip empty lines
         int num_cmds = parse_line(line, cmds);
@@ -38,7 +39,7 @@ int main(void) {
         if (num_cmds == 1) {
             char temp[MAX_LINE];
             strcpy(temp, cmds[0]);
-            char *first_word = strtok(temp, " \t");
+            char *first_word = strtok(temp, " \t"); // Find argument
             if (first_word != NULL && strcmp(first_word, "exit") == 0) {
                 break;
             }
@@ -51,7 +52,7 @@ int main(void) {
 
         // Create all necessary pipes
         for (int i = 0; i < num_pipes; i++) {
-            if (pipe(pipefds[i]) < 0) {
+            if (pipe(pipefds[i]) < 0) { // Create pipe and check if failed
                 perror("pipe");
                 pipe_failed = 1;
 
