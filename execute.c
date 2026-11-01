@@ -52,17 +52,15 @@ void execute_single_command(char *cmd_str, int in_pipeline) {
     // execvp() only returns if execution failed.
     if (errno == ENOENT){
         if (in_pipeline){
-            fprintf(stderr, "Command not found in pipe sequence.\n");
+            fprintf(stderr, "Command not found in pipe sequence: %s\n", args[0]);
         }
 
         else{
-            fprintf(stderr, "Command not found.\n");
+            fprintf(stderr, "Command not found: %s\n", args[0]);
         }
+        exit(127);
     }
 
-    else{
-        perror(args[0]);
-    }
-
+    perror(args[0]);
     exit(126);
 }
